@@ -1,0 +1,25 @@
+Pluralsight - Enhancing Application Communication with gRPC
+
+Install gRPC tooling
+The -u flag instructs get to use the network to update the named packages 
+and their dependencies. By default, get uses the network to check out 
+missing packages but does not use it to look for updates to existing packages. 
+
+$> go get -u google.golang.org/grpc
+
+go get -u golang.org/x/net/context
+
+
+
+Install protocol buffer tooling
+
+go get -u github.com/golang/protobuf/proto 
+
+go get -u github.com/golang/protobuf/protoc-gen-go
+
+Generating Source Code
+
+$> ./build-proto.sh
+
+ 
+
