@@ -53,3 +53,22 @@ To generate keys:
 $ go run $GOROOT/src/crypto/tls/generate_cert.go -host localhost
 
 
+
+To get details of Employee with badge number 2080, client runs 
+
+$ ./run-client.sh 2 
+
+or if already installed
+
+$ ../../bin/client -o 2 
+
+results into 
+
+$ id:1 badgeNumber:2080 firstName:"Grace" lastName:"Decker" vacationAccrualRate:2 vacationAccrued:30
+
+
+
+
+
+
+

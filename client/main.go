@@ -37,9 +37,22 @@ func main() {
 	switch *option {
 	case 1:
 		SendMetadata(client)
+	case 2:
+		GetByBadgeNumber(client)
 	default:
 		log.Println("Option is not valid.")
 	}
+}
+
+func GetByBadgeNumber(client pb.EmployeeServiceClient) {
+
+	res, err := client.GetByBadgeNumber(context.Background(),
+		&pb.GetByBadgeNumberRequest{BadgeNumber: 2080})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(res.Employee)
 }
 
 func SendMetadata(client pb.EmployeeServiceClient) {

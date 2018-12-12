@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"errors"
 	"grpc-demo/pb"
 	"log"
 	"net"
@@ -45,9 +45,15 @@ type employeeServer struct{}
 func (s *employeeServer) GetByBadgeNumber(ctx context.Context,
 	req *pb.GetByBadgeNumberRequest) (*pb.EmployeeResponse, error) {
 
-	fmt.Printf("Request GetByBadgeNumber() is called. Request badgenumber %d\n", req.BadgeNumber)
+	//fmt.Printf("Request GetByBadgeNumber() is called. Request badgenumber %d\n", req.BadgeNumber)
 
-	return &pb.EmployeeResponse{}, nil
+	for _, e := range employees {
+		if req.BadgeNumber == e.BadgeNumber {
+			return &pb.EmployeeResponse{Employee: &e}, nil
+		}
+	}
+
+	return nil, errors.New("Employee not founde")
 }
 
 func (s *employeeServer) GetAll(req *pb.GetAllRequest, stream pb.EmployeeService_GetAllServer) error {
