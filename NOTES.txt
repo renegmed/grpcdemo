@@ -22,4 +22,18 @@ Generating Source Code
 $> ./build-proto.sh
 
  
+run the server
+
+$> go run server/main.go
+
+build and run server
+
+$ go install grpc-demo/server
+
+$ ../../bin/server
+
+$ ./install-server.sh
+
+$ ./run-server.sh
+
 
