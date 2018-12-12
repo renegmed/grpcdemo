@@ -87,5 +87,15 @@ id:3 badgeNumber:5144 firstName:"Keaton" lastName:"Willis" vacationAccrualRate:3
 
 
 
+Client Streaming
+
+Client is sending big image file to server with command 
+
+$ ./run-client.sh 4 
+
+or if already installed
+
+$ ../../bin/client -o 4
+
 
 

@@ -2,10 +2,13 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"grpc-demo/pb"
+	"io"
 	"log"
 	"net"
 
+	"github.com/micro/go-micro/metadata"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -69,5 +72,24 @@ func (s *employeeService) SaveAll(stream pb.EmployeeService_SaveAllServer) error
 }
 
 func (s *employeeService) AddPhoto(stream pb.EmployeeService_AddPhotoServer) error {
+	md, ok := metadata.FromContext(stream.Context())
+	if ok {
+		fmt.Printf("Receiving photo for badge number %v\n", md["badgenumber"][0])
+	}
+	imgData := []byte{}
+	for {
+		data, err := stream.Recv()
+		if err == io.EOF {
+			fmt.Printf("File received with length: %v\n", len(imgData))
+			return stream.SendAndClose(&pb.AddPhotoResponse{IsOk: true})
+		}
+		if err != nil {
+			return err
+		}
+
+		fmt.Printf("Received %v bytes\n", (data.Data))
+
+		imgData = append(imgData, data.Data...)
+	}
 	return nil
 }

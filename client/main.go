@@ -6,6 +6,7 @@ import (
 	"grpc-demo/pb"
 	"io"
 	"log"
+	"os"
 
 	"context"
 
@@ -42,9 +43,47 @@ func main() {
 		GetByBadgeNumber(client)
 	case 3:
 		GetAll(client)
+	case 4:
+		AddPhoto(client)
 	default:
 		log.Println("Option is not valid.")
 	}
+}
+
+func AddPhoto(client pb.EmployeeServiceClient) {
+	f, err := os.Open("Penguins.jpg")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+
+	md := metadata.New(map[string]string{"badgenumber": "2080"})
+	ctx := context.Background()
+	ctx = metadata.NewOutgoingContext(ctx, md)
+	stream, err := client.AddPhoto(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for {
+		chunk := make([]byte, 64*1024)
+		n, err := f.Read(chunk)
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Fatal(err)
+		}
+		if n < len(chunk) {
+			chunk = chunk[:n]
+		}
+		stream.Send(&pb.AddPhotoRequest{Data: chunk})
+	}
+	res, err := stream.CloseAndRecv()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(res.IsOk)
 }
 
 func GetAll(client pb.EmployeeServiceClient) {
