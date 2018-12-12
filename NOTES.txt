@@ -99,3 +99,25 @@ $ ../../bin/client -o 4
 
 
 
+Bidirectional Streaming Messages
+
+both client and server are sending and receiving data at the same time 
+
+$ ./run-client.sh 5 
+
+or if already installed
+
+$ ../../bin/client -o 5
+
+Client Result:
+
+id:121 badgeNumber:123 firstName:"Joh" lastName:"Smith" vacationAccrualRate:1.2
+id:122 badgeNumber:234 firstName:"Lisa" lastName:"Wu" vacationAccrualRate:1.7 vacationAccrued:10
+
+Server Result ( 2 appended employees):
+
+{1 2080 Grace Decker 2 30 {} [] 0}
+{2 7538 Amity Fuller 2.3 23.4 {} [] 0}
+{3 5144 Keaton Willis 3 31.7 {} [] 0}
+{121 123 Joh Smith 1.2 0 {} [] 0}
+{122 234 Lisa Wu 1.7 10 {} [] 0}

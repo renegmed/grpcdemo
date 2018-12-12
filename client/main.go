@@ -45,11 +45,65 @@ func main() {
 		GetAll(client)
 	case 4:
 		AddPhoto(client)
+	case 5:
+		SaveAll(client)
 	default:
 		log.Println("Option is not valid.")
 	}
 }
 
+func SaveAll(client pb.EmployeeServiceClient) {
+	employees := []pb.Employee{
+		pb.Employee{
+			BadgeNumber:         123,
+			FirstName:           "Joh",
+			LastName:            "Smith",
+			VacationAccrualRate: 1.2,
+			VacationAccrued:     0,
+		},
+		pb.Employee{
+			BadgeNumber:         234,
+			FirstName:           "Lisa",
+			LastName:            "Wu",
+			VacationAccrualRate: 1.7,
+			VacationAccrued:     10,
+		},
+	}
+	stream, err := client.SaveAll(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	doneCh := make(chan struct{})
+
+	// receiving employee data
+	go func() {
+		for {
+			res, err := stream.Recv()
+			if err == io.EOF {
+				doneCh <- struct{}{}
+				break
+			}
+			if err != nil {
+				log.Fatal(err)
+			}
+			fmt.Println(res.Employee)
+		}
+	}()
+
+	// Sending employee data
+	for _, e := range employees {
+		err := stream.Send(&pb.EmployeeRequest{Employee: &e})
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	stream.CloseSend()
+
+	// wait until of all tasks are done e.g. sending and receiving data
+	<-doneCh
+
+}
 func AddPhoto(client pb.EmployeeServiceClient) {
 	f, err := os.Open("Penguins.jpg")
 	if err != nil {

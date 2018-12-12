@@ -68,6 +68,27 @@ func (s *employeeService) Save(ctx context.Context, req *pb.EmployeeRequest) (*p
 }
 
 func (s *employeeService) SaveAll(stream pb.EmployeeService_SaveAllServer) error {
+	var counter int32 = 120
+	for {
+		emp, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return err
+		}
+
+		counter = counter + 1
+		emp.Employee.Id = counter
+
+		employees = append(employees, *emp.Employee)
+		stream.Send(&pb.EmployeeResponse{Employee: emp.Employee})
+	}
+
+	for _, e := range employees {
+		fmt.Println(e)
+	}
+
 	return nil
 }
 
@@ -91,5 +112,4 @@ func (s *employeeService) AddPhoto(stream pb.EmployeeService_AddPhotoServer) err
 
 		imgData = append(imgData, data.Data...)
 	}
-	return nil
 }
