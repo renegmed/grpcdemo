@@ -34,6 +34,22 @@ $ ../../bin/server
 
 $ ./install-server.sh
 
-$ ./run-server.sh
+$ ./run-server.sh 
+
+
+Build and run client 
+
+$ ./run-client.sh 1
+
+
+or to run client only
+
+$ ../../bin/client -o 1
+
+
+
+To generate keys:
+
+$ go run $GOROOT/src/crypto/tls/generate_cert.go -host localhost
 
 

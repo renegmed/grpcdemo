@@ -6,7 +6,7 @@ import (
 	"grpc-demo/pb"
 	"log"
 
-	"golang.org/x/net/context"
+	"context"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -49,8 +49,7 @@ func SendMetadata(client pb.EmployeeServiceClient) {
 	md["user"] = []string{"mvansickle"}
 	md["password"] = []string{"password1"}
 	ctx := context.Background()
-	ctx = metadata.NewOutgoingContext(ctx, md)
-	resp, err := client.GetByBadgeNumber(ctx, &pb.GetByBadgeNumberRequest{})
+	resp, err := client.GetByBadgeNumber(ctx, &pb.GetByBadgeNumberRequest{BadgeNumber: 5})
 	if err != nil {
 		log.Println(err)
 		return

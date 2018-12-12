@@ -6,10 +6,10 @@ import (
 	"log"
 	"net"
 
-	"github.com/micro/go-micro/metadata"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/reflection"
 )
 
 const port = ":9000"
@@ -27,8 +27,15 @@ func main() {
 	opts := []grpc.ServerOption{grpc.Creds(creds)}
 	s := grpc.NewServer(opts...)
 	pb.RegisterEmployeeServiceServer(s, new(employeeServer))
-	log.Println("Starting server on port " + port)
-	s.Serve(lis)
+
+	// Register reflection service on gRPC server.
+	reflection.Register(s)
+
+	log.Println("Starting server on port %s\n" + port)
+
+	if err := s.Serve(lis); err != nil {
+		log.Fatalf("failed to serve: %v", err)
+	}
 }
 
 type employeeServer struct{}
@@ -38,13 +45,9 @@ type employeeServer struct{}
 func (s *employeeServer) GetByBadgeNumber(ctx context.Context,
 	req *pb.GetByBadgeNumberRequest) (*pb.EmployeeResponse, error) {
 
-	fmt.Println("Request GetByBadgeNumber() is called.")
+	fmt.Printf("Request GetByBadgeNumber() is called. Request badgenumber %d\n", req.BadgeNumber)
 
-	if md, ok := metadata.FromContext(ctx); ok {
-		fmt.Printf("Metadata received: %v\n", md)
-	}
-
-	return nil, nil
+	return &pb.EmployeeResponse{}, nil
 }
 
 func (s *employeeServer) GetAll(req *pb.GetAllRequest, stream pb.EmployeeService_GetAllServer) error {

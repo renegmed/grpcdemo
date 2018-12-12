@@ -11,4 +11,6 @@
 # See also
 #  https://github.com/grpc/grpc-go/tree/master/examples
 
+rm -f pb/messages.pb.go
+
 protoc --proto_path $GOPATH/src/grpc-demo/pb messages.proto --go_out=plugins=grpc:$GOPATH/src
