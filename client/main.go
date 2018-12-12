@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"grpc-demo/pb"
+	"io"
 	"log"
 
 	"context"
@@ -39,19 +40,38 @@ func main() {
 		SendMetadata(client)
 	case 2:
 		GetByBadgeNumber(client)
+	case 3:
+		GetAll(client)
 	default:
 		log.Println("Option is not valid.")
 	}
 }
 
-func GetByBadgeNumber(client pb.EmployeeServiceClient) {
+func GetAll(client pb.EmployeeServiceClient) {
+	stream, err := client.GetAll(context.Background(), &pb.GetAllRequest{})
+	if err != nil {
+		log.Fatal(err)
+	}
 
+	for {
+		res, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		fmt.Println(res.Employee)
+	}
+}
+
+func GetByBadgeNumber(client pb.EmployeeServiceClient) {
 	res, err := client.GetByBadgeNumber(context.Background(),
 		&pb.GetByBadgeNumberRequest{BadgeNumber: 2080})
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	fmt.Println(res.Employee)
 }
 

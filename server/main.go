@@ -26,7 +26,7 @@ func main() {
 	}
 	opts := []grpc.ServerOption{grpc.Creds(creds)}
 	s := grpc.NewServer(opts...)
-	pb.RegisterEmployeeServiceServer(s, new(employeeServer))
+	pb.RegisterEmployeeServiceServer(s, new(employeeService))
 
 	// Register reflection service on gRPC server.
 	reflection.Register(s)
@@ -38,36 +38,36 @@ func main() {
 	}
 }
 
-type employeeServer struct{}
+type employeeService struct{}
 
 // these methods are from message.pb.go type EmployeeServiceServer interface
 
-func (s *employeeServer) GetByBadgeNumber(ctx context.Context,
+func (s *employeeService) GetByBadgeNumber(ctx context.Context,
 	req *pb.GetByBadgeNumberRequest) (*pb.EmployeeResponse, error) {
-
-	//fmt.Printf("Request GetByBadgeNumber() is called. Request badgenumber %d\n", req.BadgeNumber)
 
 	for _, e := range employees {
 		if req.BadgeNumber == e.BadgeNumber {
 			return &pb.EmployeeResponse{Employee: &e}, nil
 		}
 	}
-
 	return nil, errors.New("Employee not founde")
 }
 
-func (s *employeeServer) GetAll(req *pb.GetAllRequest, stream pb.EmployeeService_GetAllServer) error {
+func (s *employeeService) GetAll(req *pb.GetAllRequest, stream pb.EmployeeService_GetAllServer) error {
+	for _, e := range employees {
+		stream.Send(&pb.EmployeeResponse{Employee: &e})
+	}
 	return nil
 }
 
-func (s *employeeServer) Save(ctx context.Context, req *pb.EmployeeRequest) (*pb.EmployeeResponse, error) {
+func (s *employeeService) Save(ctx context.Context, req *pb.EmployeeRequest) (*pb.EmployeeResponse, error) {
 	return nil, nil
 }
 
-func (s *employeeServer) SaveAll(stream pb.EmployeeService_SaveAllServer) error {
+func (s *employeeService) SaveAll(stream pb.EmployeeService_SaveAllServer) error {
 	return nil
 }
 
-func (s *employeeServer) AddPhoto(stream pb.EmployeeService_AddPhotoServer) error {
+func (s *employeeService) AddPhoto(stream pb.EmployeeService_AddPhotoServer) error {
 	return nil
 }

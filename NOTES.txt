@@ -53,6 +53,7 @@ To generate keys:
 $ go run $GOROOT/src/crypto/tls/generate_cert.go -host localhost
 
 
+Unary Messages 
 
 To get details of Employee with badge number 2080, client runs 
 
@@ -67,6 +68,22 @@ results into
 $ id:1 badgeNumber:2080 firstName:"Grace" lastName:"Decker" vacationAccrualRate:2 vacationAccrued:30
 
 
+
+Server Streaming
+
+To get all Employee, the client runs 
+
+$ ./run-client.sh 3 
+
+or if already installed
+
+$ ../../bin/client -o 3
+
+Result:
+
+id:1 badgeNumber:2080 firstName:"Grace" lastName:"Decker" vacationAccrualRate:2 vacationAccrued:30
+id:2 badgeNumber:7538 firstName:"Amity" lastName:"Fuller" vacationAccrualRate:2.3 vacationAccrued:23.4
+id:3 badgeNumber:5144 firstName:"Keaton" lastName:"Willis" vacationAccrualRate:3 vacationAccrued:31.7
 
 
 
